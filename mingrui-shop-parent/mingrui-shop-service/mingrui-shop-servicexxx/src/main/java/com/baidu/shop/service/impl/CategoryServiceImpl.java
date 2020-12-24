@@ -6,6 +6,7 @@ import com.baidu.shop.entity.CategoryEntity;
 import com.baidu.shop.mapper.CategoryMapper;
 import com.baidu.shop.service.CategoryServiceI;
 
+import com.baidu.shop.status.HTTPStatus;
 import com.baidu.shop.utils.ObjectUtil;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,29 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
 
     @Autowired
     private CategoryMapper categoryMapper;
+
+    @Transactional
+    @Override
+
+    public Result<JsonObject> saveCategoryNameById(CategoryEntity categoryEntity) {
+
+        //根据新增节点的父id查询父节点信息
+        CategoryEntity parentCategoryEntity = categoryMapper.selectByPrimaryKey(categoryEntity.getParentId());
+        //判断新增节点的父节点的状态是不是父节点
+        if(parentCategoryEntity.getIsParent() != 1) {
+
+            CategoryEntity categoryEntity1 = new CategoryEntity();
+            categoryEntity1.setId(categoryEntity.getParentId());
+            categoryEntity1.setIsParent(1);
+            //如果父节点的状态不是父节点,将其修改为父节点
+            categoryMapper.updateByPrimaryKeySelective(categoryEntity1);
+
+        }
+        //新增节点
+        categoryMapper.insertSelective(categoryEntity);
+
+        return this.setResultSuccess();
+    }
 
     @Override
     public Result<List<CategoryEntity>> getCategoryByPid(Integer pid) {
@@ -37,16 +61,16 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
     @Transactional //控制事务
     public Result<JsonObject> deleteCategoryById(Integer id) {
         //id校验
-        if(ObjectUtil.isNull(id) || id <= 0) return this.setResultError("id不合法");
+        if(ObjectUtil.isNull(id) || id <= 0) return this.setResultError(HTTPStatus.OPERATION_ERROR,"id不合法");
 
         //通过id查询当前节点数据
         CategoryEntity categoryEntity = categoryMapper.selectByPrimaryKey(id);
 
         //判断当前数据是否为空
-        if(ObjectUtil.isNull(categoryEntity)) return this.setResultError("数据不存在");
+        if(ObjectUtil.isNull(categoryEntity)) return this.setResultError(HTTPStatus.OPERATION_ERROR,"数据不存在");
 
         //判断当前节点是否为父节点
-        if(categoryEntity.getIsParent() == 1) return this.setResultError("当前节点为父节点,不能被删除");
+        if(categoryEntity.getIsParent() == 1) return this.setResultError(HTTPStatus.OPERATION_ERROR,"当前节点为父节点,不能被删除");
 
         //查询当前节点的父节点下有没有其他子节点
         Example example = new Example(CategoryEntity.class);
