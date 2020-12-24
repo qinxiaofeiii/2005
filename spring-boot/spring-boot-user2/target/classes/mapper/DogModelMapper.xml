@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mr.qxf.dog.mapper.DogModelMapper">
+  <resultMap id="BaseResultMap" type="com.mr.qxf.dog.model.DogModel">
+    <id column="dog_id" jdbcType="INTEGER" property="dogId" />
+    <result column="dog_name" jdbcType="VARCHAR" property="dogName" />
+    <result column="dog_sex" jdbcType="INTEGER" property="dogSex" />
+    <result column="dog_type" jdbcType="INTEGER" property="dogType" />
+    <result column="dog_food" jdbcType="VARCHAR" property="dogFood" />
+    <result column="dog_bir" jdbcType="DATE" property="dogBir" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    dog_id, dog_name, dog_sex, dog_type, dog_food, dog_bir
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_dog
+    where dog_id = #{dogId,jdbcType=INTEGER}
+  </select>
+  <select id="list"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_dog
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_dog
+    where dog_id = #{dogId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mr.qxf.dog.model.DogModel">
+    insert into t_dog (dog_id, dog_name, dog_sex, 
+      dog_type, dog_food, dog_bir
+      )
+    values (#{dogId,jdbcType=INTEGER}, #{dogName,jdbcType=VARCHAR}, #{dogSex,jdbcType=INTEGER}, 
+      #{dogType,jdbcType=INTEGER}, #{dogFood,jdbcType=VARCHAR}, #{dogBir,jdbcType=DATE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.mr.qxf.dog.model.DogModel">
+    insert into t_dog
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dogId != null">
+        dog_id,
+      </if>
+      <if test="dogName != null">
+        dog_name,
+      </if>
+      <if test="dogSex != null">
+        dog_sex,
+      </if>
+      <if test="dogType != null">
+        dog_type,
+      </if>
+      <if test="dogFood != null">
+        dog_food,
+      </if>
+      <if test="dogBir != null">
+        dog_bir,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dogId != null">
+        #{dogId,jdbcType=INTEGER},
+      </if>
+      <if test="dogName != null">
+        #{dogName,jdbcType=VARCHAR},
+      </if>
+      <if test="dogSex != null">
+        #{dogSex,jdbcType=INTEGER},
+      </if>
+      <if test="dogType != null">
+        #{dogType,jdbcType=INTEGER},
+      </if>
+      <if test="dogFood != null">
+        #{dogFood,jdbcType=VARCHAR},
+      </if>
+      <if test="dogBir != null">
+        #{dogBir,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.mr.qxf.dog.model.DogModel">
+    update t_dog
+    <set>
+      <if test="dogName != null">
+        dog_name = #{dogName,jdbcType=VARCHAR},
+      </if>
+      <if test="dogSex != null">
+        dog_sex = #{dogSex,jdbcType=INTEGER},
+      </if>
+      <if test="dogType != null">
+        dog_type = #{dogType,jdbcType=INTEGER},
+      </if>
+      <if test="dogFood != null">
+        dog_food = #{dogFood,jdbcType=VARCHAR},
+      </if>
+      <if test="dogBir != null">
+        dog_bir = #{dogBir,jdbcType=DATE},
+      </if>
+    </set>
+    where dog_id = #{dogId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.mr.qxf.dog.model.DogModel">
+    update t_dog
+    set dog_name = #{dogName,jdbcType=VARCHAR},
+      dog_sex = #{dogSex,jdbcType=INTEGER},
+      dog_type = #{dogType,jdbcType=INTEGER},
+      dog_food = #{dogFood,jdbcType=VARCHAR},
+      dog_bir = #{dogBir,jdbcType=DATE}
+    where dog_id = #{dogId,jdbcType=INTEGER}
+  </update>
+</mapper>

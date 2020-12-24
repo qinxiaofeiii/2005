@@ -1,0 +1,20 @@
+server:
+  port: 8765
+
+spring:
+  application:
+    name: eureka-feign
+  zipkin:
+    # zipkin 地址
+    base-url: http://localhost:9411
+
+feign:
+  hystrix:
+    # feign 高版本断路器默认关闭,所以在此需要手动打开
+    enabled: true
+
+eureka:
+  client:
+    service-url:
+      # 指定注册中心的服务地址
+      defaultZone: http://localhost:8761/eureka/

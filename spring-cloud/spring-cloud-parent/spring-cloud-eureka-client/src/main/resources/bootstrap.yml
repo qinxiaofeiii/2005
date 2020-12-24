@@ -1,0 +1,53 @@
+server:
+  port: 8080
+
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  application:
+    name: eureka-client
+  cloud:
+    # 配置中心
+    config:
+      # 文件名前缀
+      name: customize
+      # 后缀 dev test prop
+      profile: dev
+      # 配置中心的地址
+      #uri: http://localhost:8888
+      # 访问配置中心用户名
+      username: mingrui
+      # 访问配置中心用户名
+      password: 123456
+      discovery:
+        #启用配置中心高可用
+        enabled: true
+        # 配置中心id
+        service-id: CONFIG-SERVER
+         # 启用bus
+    # 启用bus
+    bus:
+      enabled: true
+      # 启用消息跟踪
+      trace:
+        enabled: true
+  zipkin:
+    # zipkin 地址
+    base-url: http://localhost:9411
+# 暴露bus-refresh端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh
+
+
+
+eureka:
+  client:
+    service-url:
+      # 指定注册中心的服务地址
+      defaultZone: http://localhost:8761/eureka/

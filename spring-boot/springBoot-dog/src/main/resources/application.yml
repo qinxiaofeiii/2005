@@ -1,0 +1,87 @@
+server:
+  port: 8088
+
+spring:
+  # 配置数据源
+  datasource:
+    # 数据源名称，任意(见名识意),springboot多数据源的情况?
+    name: mysql
+    # mysql utf8的编码问题？？？？？
+    url: jdbc:mysql://152.136.254.23:3306/qin?nullNamePatternMatchesAll=true&serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8
+    # 数据库连接用户
+    username: root
+    # 数据库连接密码
+    password: Root.110
+    # 数据库连接池类型使用alibaba的数据库连接池
+    type: com.alibaba.druid.pool.DruidDataSource
+    # 驱动,低版本使用com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙，此处是filter修改的地方
+    filters:
+      commons-log:
+        connection-logger-name: stat,wall,log4j
+    # 连接池内初始化连接数 在自己电脑上开发可以设置为1
+    initialSize: 1
+    # 最小连接数 在自己电脑上开发可以设置为1
+    minIdle: 1
+    # 最大连接数
+    maxActive: 20
+    # 数据库连接超时等待时间
+    maxWait: 60000
+    # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+    timeBetweenEvictionRunsMillis: 60000
+    # 配置一个连接在池中最小生存的时间，单位是毫秒
+    minEvictableIdleTimeMillis: 300000
+    # 验证连接发送的sql语句
+    validationQuery: SELECT 1 FROM DUAL
+    # 测试闲置连接
+    testWhileIdle: true
+    # 测试正在使用连接
+    testOnBorrow: false
+    # 测试已经收回的连接
+    testOnReturn: false
+    # 打开PSCache
+    poolPreparedStatements: true
+    # 指定每个连接上PSCache的大小
+    maxOpenPreparedStatements: 20
+    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    # 使用全局的数据源监控 合并多个DruidDataSource的监控数据
+    useGlobalDataSourceStat: true
+  # spring整合freemarker
+  freemarker:
+    # 禁用模板缓存
+    cache: false
+    # 编码格式
+    charset: UTF-8
+    # freemarker模板后缀 默认是 .ftl
+    suffix: .ftl
+    # 是否为此技术启用MVC视图分辨率。
+    enabled: true
+    # Content-Type值
+    content-type: text/html
+    # 模板加载路径 按需配置 ,默认路径是 classpath:/templates/
+    template-loader-path: classpath:/templates/
+
+#boot 2.0 版本监控
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+# 整合mybatis
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+    # 实体类/vo所在的包-->mapper标签内默认不写resultType或resultMap会从当前包下自动找需要返回的类，使用mybatis代码生成器意义不大
+    # type-aliases-package: com.mr.syq.*.vo
+    # mapper文件的目录
+  # mybatis配置
+  #configuration:
+  # 日志输出 可以用此方式输出mybatis日志，但是不推荐，有很多与程序无关的日志存在
+  #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+#日志设置
+logging:
+  level:
+    # 打印与我们程序相关的日志信息
+    com.mr.qxf: debug
