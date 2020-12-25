@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @Version V1.0
  **/
 @Data
-@Component
+@Component//相当于配置文件中的<bean id="" class=""/>
 @Slf4j
 public class BaseApiService<T> {
     public Result<T> setResultError(Integer code, String msg) {

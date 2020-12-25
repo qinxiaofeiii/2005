@@ -22,7 +22,7 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
     @Autowired
     private CategoryMapper categoryMapper;
 
-    @Transactional
+    @Transactional//控制事务
     @Override
 
     public Result<JsonObject> saveCategoryNameById(CategoryEntity categoryEntity) {

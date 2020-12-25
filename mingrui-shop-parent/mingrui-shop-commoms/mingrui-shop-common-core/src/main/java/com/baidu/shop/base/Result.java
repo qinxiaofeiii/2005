@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
  * @Date 2020/8/17
  * @Version V1.0
  **/
-@Data
-@NoArgsConstructor
+@Data//提供set get方法
+@NoArgsConstructor//提供无参构造函数
 public class Result<T> {
     private Integer code;//返回码
     private String message;//返回消息
