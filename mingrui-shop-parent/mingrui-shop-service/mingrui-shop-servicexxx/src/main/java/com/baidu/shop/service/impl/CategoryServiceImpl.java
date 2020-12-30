@@ -22,9 +22,17 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
     @Autowired
     private CategoryMapper categoryMapper;
 
+    @Override
+    @Transactional
+    public Result<List<CategoryEntity>> getCategoryByBrandId(Integer brandId) {
+
+        List<CategoryEntity> list = categoryMapper.getCategoryByBrandId(brandId);
+
+        return this.setResultSuccess(list);
+    }
+
     @Transactional//控制事务
     @Override
-
     public Result<JsonObject> saveCategoryNameById(CategoryEntity categoryEntity) {
 
         //根据新增节点的父id查询父节点信息

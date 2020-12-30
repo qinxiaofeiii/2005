@@ -29,4 +29,8 @@ public interface CategoryServiceI {
     @ApiOperation(value = "新增商品分类")
     @PostMapping(value = "/category/save")
     Result<JsonObject> saveCategoryNameById(@Validated(MingruiOperation.Add.class) @RequestBody CategoryEntity categoryEntity);
+
+    @ApiOperation(value = "通过brandId查询商品分类信息")
+    @GetMapping(value = "category/brand")
+    Result<List<CategoryEntity>> getCategoryByBrandId(Integer brandId);
 }
