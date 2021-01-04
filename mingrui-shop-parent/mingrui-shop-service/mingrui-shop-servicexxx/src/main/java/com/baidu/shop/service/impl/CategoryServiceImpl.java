@@ -92,7 +92,7 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
 
         List<CategoryBrandEntity> select = categoryBrandMapper.select(categoryBrandEntity);
 
-        if(select.size() >= 1) return this.setResultError("该分类已经被其他品牌绑定,不能删除!");
+        if(select.size() != -1) return this.setResultError("该分类已经被其他品牌绑定,不能删除!");
 
         //查询当前节点的父节点下有没有其他子节点
         Example example = new Example(CategoryEntity.class);
