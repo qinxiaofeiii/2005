@@ -4,8 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.baidu.shop.base.BaseApiService;
 import com.baidu.shop.base.Result;
 import com.baidu.shop.dto.SpecGroupDTO;
+import com.baidu.shop.dto.SpecParamDTO;
 import com.baidu.shop.entity.SpecGroupEntity;
+import com.baidu.shop.entity.SpecParamEntity;
 import com.baidu.shop.mapper.SpecGroupMapper;
+import com.baidu.shop.mapper.SpecParamMapper;
 import com.baidu.shop.service.SpecificationServiceI;
 import com.baidu.shop.utils.BaiduBeanUtil;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,45 @@ public class SpecificationServiceImpl extends BaseApiService implements Specific
 
     @Resource
     private SpecGroupMapper specGroupMapper;
+
+    @Resource
+    private SpecParamMapper specParamMapper;
+
+    @Override
+    public Result<List<JSONObject>> saveSpecParam(SpecParamDTO specParamDTO) {
+
+        specParamMapper.insertSelective(BaiduBeanUtil.copyProperties(specParamDTO,SpecParamEntity.class));
+
+        return this.setResultSuccess();
+    }
+
+    @Override
+    public Result<List<JSONObject>> editSpecParam(SpecParamDTO specParamDTO) {
+
+        specParamMapper.updateByPrimaryKeySelective(BaiduBeanUtil.copyProperties(specParamDTO,SpecParamEntity.class));
+
+        return this.setResultSuccess();
+    }
+
+    @Override
+    public Result<List<JSONObject>> deleteSpecParam(Integer id) {
+
+        specParamMapper.deleteByPrimaryKey(id);
+
+        return this.setResultSuccess();
+    }
+
+    @Override
+    @Transactional
+    public Result<List<SpecParamEntity>> getSpecParamByGroupId(SpecParamDTO specParamDTO) {
+
+        Example example = new Example(SpecParamEntity.class);
+        example.createCriteria().andEqualTo("groupId",BaiduBeanUtil.copyProperties(specParamDTO,SpecParamEntity.class).getGroupId());
+
+        List<SpecParamEntity> specParamEntities = specParamMapper.selectByExample(example);
+
+        return this.setResultSuccess(specParamEntities);
+    }
 
     @Override
     @Transactional
@@ -41,6 +83,13 @@ public class SpecificationServiceImpl extends BaseApiService implements Specific
     @Override
     @Transactional
     public Result<JSONObject> deleteSpecGroup(Integer id) {
+
+        Example example = new Example(SpecParamEntity.class);
+        example.createCriteria().andEqualTo("groupId",id);
+
+        List<SpecParamEntity> specParamEntities = specParamMapper.selectByExample(example);
+
+        if(specParamEntities.size() >= 1) return this.setResultError("该规格分组下绑定了规格参数,不能直接删除");
 
         specGroupMapper.deleteByPrimaryKey(id);
 
