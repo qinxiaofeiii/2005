@@ -1,0 +1,145 @@
+package com.baidu.shop.service.impl;
+
+import com.alibaba.fastjson.JSONObject;
+import com.baidu.shop.base.BaseApiService;
+import com.baidu.shop.base.Result;
+import com.baidu.shop.dto.BrandDTO;
+import com.baidu.shop.entity.BrandEntity;
+import com.baidu.shop.entity.CategoryBrandEntity;
+import com.baidu.shop.mapper.BrandMapper;
+import com.baidu.shop.mapper.CategoryBrandMapper;
+import com.baidu.shop.service.BrandServiceI;
+import com.baidu.shop.utils.BaiduBeanUtil;
+import com.baidu.shop.utils.ObjectUtil;
+import com.baidu.shop.utils.PinyinUtil;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RestController;
+import tk.mybatis.mapper.entity.Example;
+
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+public class BrandServiceImpl extends BaseApiService implements BrandServiceI {
+
+    @Resource
+    private BrandMapper brandMapper;
+
+    @Resource
+    private CategoryBrandMapper categoryBrandMapper;
+
+    @Override
+    public Result<JSONObject> editBrand(BrandDTO brandDTO) {
+
+        BrandEntity brandEntity = BaiduBeanUtil.copyProperties(brandDTO, BrandEntity.class);
+        //处理品牌首字母
+        brandEntity.setLetter(PinyinUtil.getUpperCase(String.valueOf(brandEntity.getName()
+                .toCharArray()[0]), false).toCharArray()[0]);
+        brandMapper.updateByPrimaryKeySelective(brandEntity);
+
+        //先通过brandId删除中间表的数据
+        Example example = new Example(CategoryBrandEntity.class);
+        example.createCriteria().andEqualTo("brandId",brandEntity.getId());
+        categoryBrandMapper.deleteByExample(example);
+
+        //获得分类id集合
+        String categories = brandDTO.getCategories();
+        if(ObjectUtil.isNull(brandDTO.getCategories())) return this.setResultError("");
+
+        if(categories.contains(",")){
+            categoryBrandMapper.insertList(
+                    Arrays.asList(categories.split(","))
+                            .stream()
+                            .map(categoryIds ->new CategoryBrandEntity(Integer.valueOf(categoryIds)
+                                    ,brandEntity.getId()))
+                            .collect(Collectors.toList()));
+
+        }else{
+            CategoryBrandEntity categoryBrandEntity = new CategoryBrandEntity();
+            categoryBrandEntity.setCategoryId(Integer.valueOf(categories));
+            categoryBrandEntity.setBrandId(brandEntity.getId());
+
+            categoryBrandMapper.insertSelective(categoryBrandEntity);
+        }
+
+        return this.setResultSuccess();
+    }
+
+    @Override
+    @Transactional
+    public Result<JSONObject> saveBrand(BrandDTO brandDTO) {
+
+        //新增返回主键
+        BrandEntity brandEntity = BaiduBeanUtil.copyProperties(brandDTO, BrandEntity.class);
+        //处理首字母
+        brandEntity.setLetter(PinyinUtil.getUpperCase(String.valueOf(brandEntity.getName().toCharArray()[0]),false).toCharArray()[0]);
+
+        brandMapper.insertSelective(brandEntity);
+
+        //维护中间表
+        String categories = brandDTO.getCategories();//获取商品分类id集合
+        if(ObjectUtil.isNull(categories)) return this.setResultError("分类id不能为空");
+//        List<CategoryBrandEntity> categoryBrandEntities = new ArrayList<>();
+        if(categories.contains(",")){
+
+//            String[] categoryIds = categories.split(",");
+//            for (String categoryId : categoryIds) {
+//                CategoryBrandEntity entity = new CategoryBrandEntity();
+//                entity.setCategoryId(Integer.valueOf(categoryId));
+//                entity.setBrandId(brandEntity.getId());
+//                categoryBrandEntities.add(entity);
+//            }
+//            String[] categoryIdArr = categories.split(",");
+//            ArrayList<String> list = new ArrayList<>();
+//            for (String s : categoryIdArr) {
+//                list.add(s);
+//            }
+            categoryBrandMapper.insertList( Arrays.asList(categories.split(","))
+                    .stream()
+                    .map(categoryIds -> {
+                       return new CategoryBrandEntity(brandEntity.getId(),
+                        Integer.valueOf(categoryIds));})
+                    .collect(Collectors.toList()));
+
+        }else{
+
+            CategoryBrandEntity entity = new CategoryBrandEntity();
+            entity.setCategoryId(Integer.valueOf(categories));
+            entity.setBrandId(brandEntity.getId());
+
+            categoryBrandMapper.insert(entity);
+        }
+
+        return this.setResultSuccess();
+    }
+
+    @Override
+    public Result<PageInfo<BrandEntity>> getBrandList(BrandDTO brandDTO) {
+
+        //分页
+        PageHelper.startPage(brandDTO.getPage(),brandDTO.getRows());
+
+        //排序
+        if(ObjectUtil.isNotNull(brandDTO.getSort())) PageHelper.orderBy(brandDTO.getOrderBy());
+
+        BrandEntity brandEntity = BaiduBeanUtil.copyProperties(brandDTO, BrandEntity.class);
+
+        Example example = new Example(BrandEntity.class);
+        example.createCriteria().andLike("name","%"+ brandEntity.getName() +"%");
+
+        List<BrandEntity> brandEntities = brandMapper.selectByExample(example);
+        PageInfo<BrandEntity> pageInfo = new PageInfo<>(brandEntities);
+
+        return this.setResultSuccess(pageInfo);
+    }
+
+    private void insertCategoryBrandInfo(){
+
+    }
+
+}
