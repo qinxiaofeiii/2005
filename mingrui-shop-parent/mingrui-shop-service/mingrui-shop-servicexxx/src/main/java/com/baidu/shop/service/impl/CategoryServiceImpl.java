@@ -2,25 +2,31 @@ package com.baidu.shop.service.impl;
 
 import com.baidu.shop.base.BaseApiService;
 import com.baidu.shop.base.Result;
+import com.baidu.shop.entity.CategoryBrandEntity;
 import com.baidu.shop.entity.CategoryEntity;
+import com.baidu.shop.mapper.CategoryBrandMapper;
 import com.baidu.shop.mapper.CategoryMapper;
 import com.baidu.shop.service.CategoryServiceI;
 
 import com.baidu.shop.status.HTTPStatus;
+import com.baidu.shop.utils.BaiduBeanUtil;
 import com.baidu.shop.utils.ObjectUtil;
 import com.google.gson.JsonObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 import tk.mybatis.mapper.entity.Example;
 
 
+import javax.annotation.Resource;
 import java.util.List;
 @RestController
 public class CategoryServiceImpl extends BaseApiService implements CategoryServiceI {
 
-    @Autowired
+    @Resource
     private CategoryMapper categoryMapper;
+
+    @Resource
+    private CategoryBrandMapper categoryBrandMapper;
 
     @Override
     @Transactional
@@ -79,6 +85,14 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
 
         //判断当前节点是否为父节点
         if(categoryEntity.getIsParent() == 1) return this.setResultError(HTTPStatus.OPERATION_ERROR,"当前节点为父节点,不能被删除");
+
+        //如果当前分类被品牌绑定,该分类不能被删除
+        CategoryBrandEntity categoryBrandEntity = new CategoryBrandEntity();
+        categoryBrandEntity.setCategoryId(id);
+
+        List<CategoryBrandEntity> select = categoryBrandMapper.select(categoryBrandEntity);
+
+        if(select.size() >= 1) return this.setResultError("该分类已经被其他品牌绑定,不能删除!");
 
         //查询当前节点的父节点下有没有其他子节点
         Example example = new Example(CategoryEntity.class);
