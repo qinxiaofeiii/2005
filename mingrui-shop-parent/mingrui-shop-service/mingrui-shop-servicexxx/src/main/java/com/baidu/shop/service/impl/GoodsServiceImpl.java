@@ -1,20 +1,18 @@
 package com.baidu.shop.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baidu.shop.base.BaseApiService;
 import com.baidu.shop.base.Result;
 import com.baidu.shop.dto.SpuDTO;
-import com.baidu.shop.entity.BrandEntity;
-import com.baidu.shop.entity.CategoryEntity;
-import com.baidu.shop.entity.SpuEntity;
-import com.baidu.shop.mapper.BrandMapper;
-import com.baidu.shop.mapper.CategoryMapper;
-import com.baidu.shop.mapper.SpuMapper;
+import com.baidu.shop.entity.*;
+import com.baidu.shop.mapper.*;
 import com.baidu.shop.service.GoodsServiceI;
 import com.baidu.shop.status.HTTPStatus;
 import com.baidu.shop.utils.BaiduBeanUtil;
 import com.baidu.shop.utils.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,10 +20,12 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@Slf4j
 public class GoodsServiceImpl extends BaseApiService implements GoodsServiceI {
 
     @Resource
@@ -37,12 +37,62 @@ public class GoodsServiceImpl extends BaseApiService implements GoodsServiceI {
     @Resource
     private BrandMapper brandMapper;
 
+    @Resource
+    private SkuMapper skuMapper;
+
+    @Resource
+    private SpuDetailMapper spuDetailMapper;
+
+    @Resource
+    private StockMapper stockMapper;
+
+
+    @Override
+    @Transactional
+    public Result<JSONObject> saveGoods(SpuDTO spuDTO) {
+
+        final Date date = new Date();
+        //新增spu
+        SpuEntity spuEntity = BaiduBeanUtil.copyProperties(spuDTO, SpuEntity.class);
+        spuEntity.setCreateTime(date);
+        spuEntity.setLastUpdateTime(date);
+        spuEntity.setSaleable(1);
+        spuEntity.setValid(1);
+        spuMapper.insertSelective(spuEntity);
+
+        //新增spuDetail
+        SpuDetailEntity spuDetailEntity = BaiduBeanUtil.copyProperties(spuDTO.getSpuDetail(), SpuDetailEntity.class);
+        spuDetailEntity.setSpuId(spuEntity.getId());
+        spuDetailMapper.insertSelective(spuDetailEntity);
+
+        //新增sku
+        spuDTO.getSkus().stream().forEach(skuDTO -> {
+            SkuEntity skuEntity = BaiduBeanUtil.copyProperties(skuDTO, SkuEntity.class);
+            skuEntity.setSpuId(spuEntity.getId());
+            skuEntity.setCreateTime(date);
+            skuEntity.setLastUpdateTime(date);
+            skuMapper.insertSelective(skuEntity);
+
+            //新增stock
+            StockEntity stockEntity = new StockEntity();
+            stockEntity.setSkuId(skuEntity.getId());
+            stockEntity.setStock(skuDTO.getStock());
+            stockMapper.insertSelective(stockEntity);
+        });
+
+        return this.setResultSuccess();
+    }
+
     @Override
     @Transactional
     public Result<List<SpuDTO>> getSpuInfo(SpuDTO spuDTO) {
-
+        //分页
         if(ObjectUtil.isNotNull(spuDTO.getPage()) && ObjectUtil.isNotNull(spuDTO.getRows()))
             PageHelper.startPage(spuDTO.getPage(),spuDTO.getRows());
+
+        //排序
+        if(!StringUtils.isEmpty(spuDTO.getSort()) && !StringUtils.isEmpty(spuDTO.getOrder()))
+            PageHelper.orderBy(spuDTO.getOrderBy());
 
         Example example = new Example(SpuEntity.class);
         Example.Criteria criteria = example.createCriteria();

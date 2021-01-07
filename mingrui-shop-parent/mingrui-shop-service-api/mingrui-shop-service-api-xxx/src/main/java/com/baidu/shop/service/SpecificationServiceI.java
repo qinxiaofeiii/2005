@@ -49,4 +49,5 @@ public interface SpecificationServiceI {
     @ApiOperation(value = "删除规格参数")
     @DeleteMapping(value = "specParam/delete")
     Result<List<JSONObject>> deleteSpecParam(Integer id);
+
 }

@@ -32,6 +32,15 @@ public class BrandServiceImpl extends BaseApiService implements BrandServiceI {
     @Resource
     private CategoryBrandMapper categoryBrandMapper;
 
+
+    @Override
+    public Result<List<BrandEntity>> getBrandByCategoryId(Integer cid) {
+
+        List<BrandEntity> list = brandMapper.getBrandByCategoryId(cid);
+
+        return this.setResultSuccess(list);
+    }
+
     @Override
     public Result<JSONObject> deleteBrand(Integer id) {
 
@@ -103,12 +112,13 @@ public class BrandServiceImpl extends BaseApiService implements BrandServiceI {
 
         if(categories.contains(",")){
 
-            categoryBrandMapper.insertList( Arrays.asList(categories.split(","))
-                    .stream()
-                    .map(categoryIds -> {
-                        return new CategoryBrandEntity(brandId,
-                                Integer.valueOf(categoryIds));})
-                    .collect(Collectors.toList()));
+            categoryBrandMapper.insertList(
+                    Arrays.asList(categories.split(","))
+                            .stream()
+                            .map(categoryIdStr -> new CategoryBrandEntity(Integer.valueOf(categoryIdStr)
+                                    ,brandId))
+                            .collect(Collectors.toList())
+            );
         }else{
 
             CategoryBrandEntity entity = new CategoryBrandEntity();

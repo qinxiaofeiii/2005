@@ -11,6 +11,7 @@ import com.baidu.shop.mapper.SpecGroupMapper;
 import com.baidu.shop.mapper.SpecParamMapper;
 import com.baidu.shop.service.SpecificationServiceI;
 import com.baidu.shop.utils.BaiduBeanUtil;
+import com.baidu.shop.utils.ObjectUtil;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 import tk.mybatis.mapper.entity.Example;
@@ -55,7 +56,12 @@ public class SpecificationServiceImpl extends BaseApiService implements Specific
     public Result<List<SpecParamEntity>> getSpecParamByGroupId(SpecParamDTO specParamDTO) {
 
         Example example = new Example(SpecParamEntity.class);
-        example.createCriteria().andEqualTo("groupId",BaiduBeanUtil.copyProperties(specParamDTO,SpecParamEntity.class).getGroupId());
+        Example.Criteria criteria = example.createCriteria();
+
+        if(ObjectUtil.isNotNull(specParamDTO.getGroupId()))
+            criteria.andEqualTo("groupId",BaiduBeanUtil.copyProperties(specParamDTO,SpecParamEntity.class).getGroupId());
+        if(ObjectUtil.isNotNull(specParamDTO.getCid()))
+            criteria.andEqualTo("cid",specParamDTO.getCid());
 
         List<SpecParamEntity> specParamEntities = specParamMapper.selectByExample(example);
 
