@@ -48,6 +48,15 @@ public class GoodsServiceImpl extends BaseApiService implements GoodsServiceI {
     private StockMapper stockMapper;
 
     @Override
+    public Result<JSONObject> editSaleable(SpuEntity spuEntity) {
+
+        spuMapper.updateByPrimaryKeySelective(spuEntity);
+
+        return this.setResultSuccess();
+    }
+
+    @Override
+    @Transactional
     public Result<JSONObject> deleteGoods(Integer spuId) {
 
         //删除spu

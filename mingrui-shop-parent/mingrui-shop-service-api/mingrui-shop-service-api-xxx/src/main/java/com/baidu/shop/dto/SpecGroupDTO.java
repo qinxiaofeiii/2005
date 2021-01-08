@@ -22,6 +22,6 @@ public class SpecGroupDTO extends BaseDTO {
     private String name;
 
     @ApiModelProperty(value = "商品分类id，一个分类下有多个规格组",example = "1")
-    @NotNull(message = "商品id不能为空",groups = {MingruiOperation.Add.class})
+    @NotNull(message = "商品分类id不能为空",groups = {MingruiOperation.Add.class,MingruiOperation.Update.class})
     private Integer cid;
 }

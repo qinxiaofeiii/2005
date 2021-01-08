@@ -6,9 +6,11 @@ import com.baidu.shop.dto.SkuDTO;
 import com.baidu.shop.dto.SpuDTO;
 import com.baidu.shop.entity.SpuDetailEntity;
 import com.baidu.shop.entity.SpuEntity;
+import com.baidu.shop.validate.group.MingruiOperation;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,11 +24,11 @@ public interface GoodsServiceI {
 
     @ApiOperation(value = "新增商品")
     @PostMapping(value = "/goods/save")
-    Result<JSONObject>saveGoods(@RequestBody SpuDTO spuDTO);
+    Result<JSONObject>saveGoods(@Validated({MingruiOperation.Add.class})@RequestBody SpuDTO spuDTO);
 
     @ApiOperation(value = "修改商品")
     @PutMapping(value = "/goods/save")
-    Result<JSONObject>editGoods(@RequestBody SpuDTO spuDTO);
+    Result<JSONObject>editGoods(@Validated({MingruiOperation.Update.class})@RequestBody SpuDTO spuDTO);
 
     @ApiOperation(value = "删除商品")
     @DeleteMapping(value = "/goods/delete")
@@ -39,4 +41,8 @@ public interface GoodsServiceI {
     @ApiOperation(value = "根据spuId获取sku信息")
     @GetMapping(value = "/goods/getSkuAndStockBySpuId")
     Result<List<SkuDTO>> getSkuAndStockBySpuId(Integer spuId);
+
+    @ApiOperation(value = "商品上架和下架")
+    @PutMapping(value = "/goods/editSaleable")
+    Result<JSONObject>editSaleable(@RequestBody SpuEntity spuEntity);
 }
