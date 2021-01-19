@@ -42,6 +42,7 @@ public class BrandServiceImpl extends BaseApiService implements BrandServiceI {
     }
 
     @Override
+    @Transactional
     public Result<JSONObject> deleteBrand(Integer id) {
 
         //删除商品品牌
@@ -53,6 +54,7 @@ public class BrandServiceImpl extends BaseApiService implements BrandServiceI {
     }
 
     @Override
+    @Transactional
     public Result<JSONObject> editBrand(BrandDTO brandDTO) {
 
         BrandEntity brandEntity = BaiduBeanUtil.copyProperties(brandDTO, BrandEntity.class);
