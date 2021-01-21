@@ -36,12 +36,13 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
     @Override
     @Transactional
     public Result<JsonObject> deleteCategoryById(Integer id) {
+        //id验证
         if(ObjectUtil.isNull(id) || id <= 0) return this.setResultError(HTTPStatus.OPERATION_ERROR,"id不合法");
 
         CategoryEntity categoryEntity = categoryMapper.selectByPrimaryKey(id);
-
+        //数据验证
         if(ObjectUtil.isNull(categoryEntity)) return this.setResultError(HTTPStatus.OPERATION_ERROR,"数据不存在");
-
+        //验证当前节点是否是父节点
         if(categoryEntity.getIsParent() == 1) return this.setResultError(HTTPStatus.OPERATION_ERROR,"当前节点为父节点,不能被删除");
 
         Example example = new Example(CategoryEntity.class);
