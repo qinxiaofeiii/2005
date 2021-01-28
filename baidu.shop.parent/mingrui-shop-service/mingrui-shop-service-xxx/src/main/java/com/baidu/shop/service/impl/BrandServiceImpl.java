@@ -68,6 +68,39 @@ public class BrandServiceImpl extends BaseApiService implements BrandServiceI {
         return this.setResultSuccess();
     }
 
+    @Override
+    public Result<JSONObject> editBrand(BrandDTO brandDTO) {
+        BrandEntity brandEntity = BaiduBeanUtil.copyProperties(brandDTO, BrandEntity.class);
+        //处理品牌首字母
+        brandEntity.setLetter(PinyinUtil.getUpperCase(String.valueOf(brandEntity.getName()
+                .toCharArray()[0]), false).toCharArray()[0]);
+        brandMapper.updateByPrimaryKeySelective(brandEntity);
+
+        //先通过brandId删除中间表的数据
+        this.deleteCategoryByBrandId(brandEntity.getId());
+
+        this.insertCategoryBrandInfo(brandDTO.getCategories(),brandEntity.getId());
+
+        return this.setResultSuccess();
+    }
+
+    @Override
+    public Result<JSONObject> deleteBrand(Integer id) {
+        //删除商品品牌
+        brandMapper.deleteByPrimaryKey(id);
+        //先通过brandId删除中间表的数据
+        this.deleteCategoryByBrandId(id);
+
+        return this.setResultSuccess();
+    }
+
+    @Override
+    public Result<List<BrandEntity>> getBrandByCategoryId(Integer cid) {
+        List<BrandEntity> list = brandMapper.getBrandByCategoryId(cid);
+
+        return this.setResultSuccess(list);
+    }
+
     private void insertCategoryBrandInfo(String categories, Integer brandId){
 
         if(ObjectUtil.isNull(categories)) throw  new RuntimeException("分类不能为空");
@@ -89,5 +122,12 @@ public class BrandServiceImpl extends BaseApiService implements BrandServiceI {
 
             categoryBrandMapper.insert(entity);
         }
+    }
+
+    private void deleteCategoryByBrandId(Integer brandId){
+        //删除商品品牌关联的分类
+        Example example = new Example(CategoryBrandEntity.class);
+        example.createCriteria().andEqualTo("brandId",brandId);
+        categoryBrandMapper.deleteByExample(example);
     }
 }

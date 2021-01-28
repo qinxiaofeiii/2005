@@ -22,4 +22,15 @@ public interface BrandServiceI{
     @PostMapping(value = "/brand/save")
     Result<JSONObject> saveBrand(@RequestBody BrandDTO brandDTO);
 
+    @ApiOperation(value="修改商品品牌")
+    @PutMapping(value = "/brand/save")
+    Result<JSONObject> editBrand(@RequestBody BrandDTO brandDTO);
+
+    @ApiOperation(value="删除商品品牌")
+    @DeleteMapping(value = "/brand/delete")
+    Result<JSONObject> deleteBrand(Integer id);
+
+    @ApiOperation(value="根据分类id查询品牌信息")
+    @GetMapping(value = "/brand/getBrandByCategoryId")
+    Result<List<BrandEntity>> getBrandByCategoryId(Integer cid);
 }
