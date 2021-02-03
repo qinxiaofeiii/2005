@@ -12,7 +12,7 @@ import java.util.Date;
 @Table(name = "tb_sku")
 public class SkuEntity {
 
-    @Id//此处写成long类型,新增的id超过int的取值范围
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

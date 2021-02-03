@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(tags = "商品接口")
+@Api(tags = "商品类接口")
 public interface GoodsServiceI {
 
     @ApiOperation(value = "获取spu信息")

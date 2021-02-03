@@ -12,7 +12,7 @@ import java.util.Date;
 @Table(name = "tb_sku")
 public class SkuEntity {
 
-    @Id
+    @Id//主键
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

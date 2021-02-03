@@ -113,7 +113,7 @@ public class GoodsServiceImpl extends BaseApiService implements GoodsServiceI {
     public Result<JSONObject> saveGoods(SpuDTO spuDTO) {
 
         final Date date = new Date();
-        //新增spu
+        //新增商品spu
         SpuEntity spuEntity = BaiduBeanUtil.copyProperties(spuDTO, SpuEntity.class);
         spuEntity.setCreateTime(date);
         spuEntity.setLastUpdateTime(date);

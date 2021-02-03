@@ -9,7 +9,7 @@ import javax.persistence.Table;
 @Data
 public class SpecGroupEntity {
 
-    @Id
+    @Id//主键
     private Integer id;
 
     private String name;

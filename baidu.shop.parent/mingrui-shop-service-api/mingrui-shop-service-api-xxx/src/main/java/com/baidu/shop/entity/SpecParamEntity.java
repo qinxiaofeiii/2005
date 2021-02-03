@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @Data
 public class SpecParamEntity {
 
-    @Id
+    @Id//主键
     private Integer id;
 
     private Integer cid;
