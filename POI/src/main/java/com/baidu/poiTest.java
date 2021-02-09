@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -94,5 +95,104 @@ public class poiTest {
 
         System.out.println("班级统计表07.xlsx 生成完毕!");
 
+    }
+
+    @Test
+    public void testWirte03BigData() throws Exception {
+        long begin = System.currentTimeMillis();
+
+        //创建一个工作薄
+        Workbook workbook = new HSSFWorkbook();
+        //创建一张工作表
+        Sheet sheet = workbook.createSheet();
+        //写入数据
+        for (int rowNumber = 0; rowNumber < 65536; rowNumber++) {
+            Row row = sheet.createRow(rowNumber);
+
+            for (int cellNumber = 0; cellNumber < 10; cellNumber++) {
+                Cell cell = row.createCell(cellNumber);
+                cell.setCellValue(cellNumber);
+
+            }
+        }
+        System.out.println("over");
+
+        FileOutputStream fileOutputStream = new FileOutputStream(PATH + "testWirte03BigData.xls");
+
+        workbook.write(fileOutputStream);
+
+        fileOutputStream.close();
+
+        long end = System.currentTimeMillis();
+
+        System.out.println((double) (end-begin)/1000);
+    }
+
+    //耗时较长 优化 缓存
+    @Test
+    public void testWirte07BigData() throws Exception {
+        long begin = System.currentTimeMillis();
+
+        //创建一个工作薄
+        Workbook workbook = new XSSFWorkbook();
+        //创建一张工作表
+        Sheet sheet = workbook.createSheet();
+        //写入数据
+        for (int rowNumber = 0; rowNumber < 100000; rowNumber++) {
+            Row row = sheet.createRow(rowNumber);
+
+            for (int cellNumber = 0; cellNumber < 10; cellNumber++) {
+                Cell cell = row.createCell(cellNumber);
+                cell.setCellValue(cellNumber);
+
+            }
+        }
+        System.out.println("over");
+
+        FileOutputStream fileOutputStream = new FileOutputStream(PATH + "testWirte07BigData.xlsx");
+
+        workbook.write(fileOutputStream);
+
+        fileOutputStream.close();
+
+        long end = System.currentTimeMillis();
+
+        System.out.println((double) (end-begin)/1000);
+
+
+    }
+
+    @Test
+    public void testWirte07BigDataS() throws Exception {
+        long begin = System.currentTimeMillis();
+
+        //创建一个工作薄
+        Workbook workbook = new SXSSFWorkbook();
+        //创建一张工作表
+        Sheet sheet = workbook.createSheet();
+        //写入数据
+        for (int rowNumber = 0; rowNumber < 100000; rowNumber++) {
+            Row row = sheet.createRow(rowNumber);
+
+            for (int cellNumber = 0; cellNumber < 10; cellNumber++) {
+                Cell cell = row.createCell(cellNumber);
+                cell.setCellValue(cellNumber);
+
+            }
+        }
+        System.out.println("over");
+
+        FileOutputStream fileOutputStream = new FileOutputStream(PATH + "testWirte07BigDataS.xlsx");
+
+        workbook.write(fileOutputStream);
+
+        fileOutputStream.close();
+
+        long end = System.currentTimeMillis();
+
+        System.out.println((double) (end-begin)/1000);
+
+        //清除临时文件
+        ((SXSSFWorkbook)workbook).dispose();
     }
 }
