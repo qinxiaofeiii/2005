@@ -162,7 +162,7 @@ public class poiTest {
 
     }
 
-    @Test
+    @Test //对07版的优化
     public void testWirte07BigDataS() throws Exception {
         long begin = System.currentTimeMillis();
 
