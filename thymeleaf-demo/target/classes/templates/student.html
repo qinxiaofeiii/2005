@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>student</title>
+</head>
+<body>
+    你好<span th:text="${stu.code}"></span><br>
+    密码是: <span data-th-text="${stu.pass}"></span><br>
+    您的年龄是：<span th:text="${stu['age']}"></span><br>
+    您喜欢的颜色是<span th:utext="${stu.likeColor}"></span>
+
+    <hr/>
+    <div th:object="${stu}">
+        <span th:text="*{code}"></span><br>
+        <span th:text="*{pass}"></span><br>
+        <span th:text="*{age}"></span><br>
+        <span th:utext="*{likeColor}"></span>
+    </div>
+
+    <span th:text="${stu.code.substring(2)}"></span><br>
+    <span th:text="${stu.code.split('')[2]}"></span><br>
+
+    <span th:text="${#dates}"></span>
+    <hr>
+    <span th:text="'666'"></span>
+    <hr>
+    <span th:if="${stu.age < 18}">
+    成年
+    </span>
+    <hr>
+    <span th:text="'你好' +${stu.code}+ ' 666,你好牛逼啊!'"></span><br>
+    <span th:text="${stu.age} *2"></span><br>
+    <span th:text="${stu.age} >= 18 ? '成年' : '未成年'"></span><br>
+   
+</body>
+</html>

@@ -10,6 +10,7 @@ import com.baidu.shop.validate.group.MingruiOperation;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public interface GoodsServiceI {
 
     @ApiOperation(value = "获取spu信息")
     @GetMapping(value = "/goods/spuInfo")
-    Result<List<SpuDTO>> getSpuInfo(SpuDTO spuDTO);
+    Result<List<SpuDTO>> getSpuInfo(@SpringQueryMap SpuDTO spuDTO);
 
     @ApiOperation(value = "新增商品")
     @PostMapping(value = "/goods/save")
@@ -36,11 +37,11 @@ public interface GoodsServiceI {
 
     @ApiOperation(value = "根据spuId获取detail信息")
     @GetMapping(value = "/goods/getSpuDetailBySpuId")
-    Result<SpuDetailEntity> getSpuDetailBySpuId(Integer spuId);
+    Result<SpuDetailEntity> getSpuDetailBySpuId(@RequestParam Integer spuId);
 
     @ApiOperation(value = "根据spuId获取sku信息")
     @GetMapping(value = "/goods/getSkuAndStockBySpuId")
-    Result<List<SkuDTO>> getSkuAndStockBySpuId(Integer spuId);
+    Result<List<SkuDTO>> getSkuAndStockBySpuId(@RequestParam Integer spuId);
 
     @ApiOperation(value = "商品上架和下架")
     @PutMapping(value = "/goods/editSaleable")

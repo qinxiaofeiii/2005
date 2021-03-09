@@ -15,6 +15,7 @@ import com.baidu.shop.utils.PinyinUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RestController;
 import tk.mybatis.mapper.entity.Example;
 
@@ -32,6 +33,14 @@ public class BrandServiceImpl extends BaseApiService implements BrandServiceI {
     @Resource
     private CategoryBrandMapper categoryBrandMapper;
 
+    @Override
+    public Result<List<BrandEntity>> getBrandByIds(String ids) {
+
+        List<Integer> idList = Arrays.asList(ids.split(","))
+                .stream().map(idStr -> Integer.valueOf(idStr)).collect(Collectors.toList());
+        List<BrandEntity> brandEntities = brandMapper.selectByIdList(idList);
+        return this.setResultSuccess(brandEntities);
+    }
 
     @Override
     public Result<List<BrandEntity>> getBrandByCategoryId(Integer cid) {
@@ -92,15 +101,20 @@ public class BrandServiceImpl extends BaseApiService implements BrandServiceI {
     public Result<PageInfo<BrandEntity>> getBrandList(BrandDTO brandDTO) {
 
         //分页
+        if(ObjectUtil.isNotNull(brandDTO.getPage()))
         PageHelper.startPage(brandDTO.getPage(),brandDTO.getRows());
 
         //排序
-        if(ObjectUtil.isNotNull(brandDTO.getSort())) PageHelper.orderBy(brandDTO.getOrderBy());
+        if(!StringUtils.isEmpty(brandDTO.getSort()))
+        PageHelper.orderBy(brandDTO.getOrderBy());
 
         BrandEntity brandEntity = BaiduBeanUtil.copyProperties(brandDTO, BrandEntity.class);
-
         Example example = new Example(BrandEntity.class);
-        example.createCriteria().andLike("name","%"+ brandEntity.getName() +"%");
+        Example.Criteria criteria = example.createCriteria();
+        if(!StringUtils.isEmpty(brandEntity.getName()))
+            criteria.andLike("name","%"+ brandEntity.getName() +"%");
+        if (ObjectUtil.isNotNull(brandEntity.getId()))
+            criteria.andEqualTo("id",brandEntity.getId());
 
         List<BrandEntity> brandEntities = brandMapper.selectByExample(example);
         PageInfo<BrandEntity> pageInfo = new PageInfo<>(brandEntities);

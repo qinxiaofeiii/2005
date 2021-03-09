@@ -15,6 +15,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>mingrui-shop-servicexxx</module>
+        <module>mingrui-shop-service-search</module>
+        <module>mingrui-shop-servicetemplate</module>
     </modules>
     <dependencies>
         <!-- SpringBoot-整合Web组件 -->

@@ -7,6 +7,7 @@ import com.baidu.shop.entity.BrandEntity;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 public interface BrandServiceI{
     @ApiOperation(value="查询商品品牌")
     @GetMapping(value = "/brand/list")
-    Result<PageInfo<BrandEntity>> getBrandList(BrandDTO brandDTO);
+    Result<PageInfo<BrandEntity>> getBrandList(@SpringQueryMap BrandDTO brandDTO);
 
     @ApiOperation(value="新增商品品牌")
     @PostMapping(value = "/brand/save")
@@ -33,4 +34,9 @@ public interface BrandServiceI{
     @ApiOperation(value="根据分类id查询品牌信息")
     @GetMapping(value = "/brand/getBrandByCategoryId")
     Result<List<BrandEntity>> getBrandByCategoryId(Integer cid);
+
+    @ApiOperation(value="通过品牌id集合获取品牌")
+    @GetMapping(value = "brand/getBrandByIds")
+    Result<List<BrandEntity>> getBrandByIds(@RequestParam String ids);
+
 }

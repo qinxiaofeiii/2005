@@ -1,6 +1,7 @@
 package com.baidu.shop.dto;
 
 import com.baidu.shop.base.BaseDTO;
+import com.baidu.shop.entity.SpecParamEntity;
 import com.baidu.shop.validate.group.MingruiOperation;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,6 +9,7 @@ import lombok.Data;
 
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @ApiModel("规格组DTO")
 @Data
@@ -24,4 +26,6 @@ public class SpecGroupDTO extends BaseDTO {
     @ApiModelProperty(value = "商品分类id，一个分类下有多个规格组",example = "1")
     @NotNull(message = "商品分类id不能为空",groups = {MingruiOperation.Add.class,MingruiOperation.Update.class})
     private Integer cid;
+
+    private List<SpecParamEntity> specParamList;
 }

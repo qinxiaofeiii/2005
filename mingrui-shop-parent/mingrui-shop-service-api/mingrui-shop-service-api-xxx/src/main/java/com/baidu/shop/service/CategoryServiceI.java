@@ -20,7 +20,7 @@ public interface CategoryServiceI {
 
     @ApiOperation(value = "通过id删除商品分类")
     @DeleteMapping(value = "/category/delete")
-    Result<JsonObject> deleteCategoryById(Integer id);
+    Result<JsonObject> deleteCategoryById(@RequestParam Integer id);
 
     @ApiOperation(value = "通过id更新商品分类name")
     @PutMapping(value = "/category/update")
@@ -33,4 +33,8 @@ public interface CategoryServiceI {
     @ApiOperation(value = "通过brandId查询商品分类信息")
     @GetMapping(value = "category/brand")
     Result<List<CategoryEntity>> getCategoryByBrandId(Integer brandId);
+
+    @ApiOperation(value = "通过id集合查询分类信息")
+    @GetMapping(value = "category/getCateByIds")
+    Result<List<CategoryEntity>> getCateByIds(@RequestParam String ids);
 }

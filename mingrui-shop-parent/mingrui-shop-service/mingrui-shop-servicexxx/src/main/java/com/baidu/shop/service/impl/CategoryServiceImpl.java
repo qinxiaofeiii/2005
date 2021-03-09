@@ -17,7 +17,10 @@ import tk.mybatis.mapper.entity.Example;
 
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 public class CategoryServiceImpl extends BaseApiService implements CategoryServiceI {
 
@@ -26,6 +29,14 @@ public class CategoryServiceImpl extends BaseApiService implements CategoryServi
 
     @Resource
     private CategoryBrandMapper categoryBrandMapper;
+
+    @Override
+    public Result<List<CategoryEntity>> getCateByIds(String ids) {
+        List<Integer> idList = Arrays.asList(ids.split(","))
+                .stream().map(idStr -> Integer.valueOf(idStr)).collect(Collectors.toList());
+        List<CategoryEntity> categoryEntities = categoryMapper.selectByIdList(idList);
+        return this.setResultSuccess(categoryEntities);
+    }
 
     @Override
     @Transactional

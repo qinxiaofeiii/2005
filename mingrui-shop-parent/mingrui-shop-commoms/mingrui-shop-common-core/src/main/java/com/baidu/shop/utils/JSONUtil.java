@@ -204,6 +204,7 @@ public class JSONUtil {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(jsonStr, type);
     }
+
     public static JSON_TYPE getJSONType(String str) {
         if (null == str || "".equals(str)) {
             return JSON_TYPE.JSON_TYPE_ERROR;
@@ -226,6 +227,19 @@ public class JSONUtil {
         /** 不是JSON格式的字符串 */
         JSON_TYPE_ERROR
     }
+
+    public static Map<String, String> toMapValueString(String json) {
+        Map<String, String> map = gson.fromJson(json, new TypeToken<Map<String,
+                String>>() {
+        }.getType());
+        return map;
+    }
+    public static Map<String, List<String>> toMapValueStrList(String json) {
+        Map<String, List<String>> map = gson.fromJson(json, new
+                TypeToken<Map<String, List<String>>>() {}.getType());
+        return map;
+    }
+
 }
 
 

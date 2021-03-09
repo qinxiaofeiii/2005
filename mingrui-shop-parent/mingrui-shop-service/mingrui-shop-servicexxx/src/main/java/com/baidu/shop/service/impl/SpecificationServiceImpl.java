@@ -52,21 +52,25 @@ public class SpecificationServiceImpl extends BaseApiService implements Specific
     }
 
     @Override
-    @Transactional
     public Result<List<SpecParamEntity>> getSpecParamByGroupId(SpecParamDTO specParamDTO) {
 
+        SpecParamEntity specParamEntity = BaiduBeanUtil.copyProperties(specParamDTO, SpecParamEntity.class);
         Example example = new Example(SpecParamEntity.class);
         Example.Criteria criteria = example.createCriteria();
 
-        if(ObjectUtil.isNotNull(specParamDTO.getGroupId()))
-            criteria.andEqualTo("groupId",BaiduBeanUtil.copyProperties(specParamDTO,SpecParamEntity.class).getGroupId());
-        if(ObjectUtil.isNotNull(specParamDTO.getCid()))
-            criteria.andEqualTo("cid",specParamDTO.getCid());
+        if(ObjectUtil.isNotNull(specParamEntity.getGroupId()))
+            criteria.andEqualTo("groupId",specParamEntity.getGroupId());
+        if(ObjectUtil.isNotNull(specParamEntity.getCid()))
+            criteria.andEqualTo("cid",specParamEntity.getCid());
+        if(ObjectUtil.isNotNull(specParamEntity.getGeneric()))
+            criteria.andEqualTo("generic",specParamEntity.getGeneric());
 
         List<SpecParamEntity> specParamEntities = specParamMapper.selectByExample(example);
 
         return this.setResultSuccess(specParamEntities);
     }
+
+
 
     @Override
     @Transactional

@@ -1,0 +1,11 @@
+server:
+  port: 8300
+
+spring:
+  jackson:
+    default-property-inclusion: non_null
+  elasticsearch:
+    rest:
+      uris: 152.136.254.23:9200
+  application:
+    name: search-server

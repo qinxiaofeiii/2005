@@ -9,6 +9,7 @@ import com.baidu.shop.entity.SpecParamEntity;
 import com.baidu.shop.validate.group.MingruiOperation;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public interface SpecificationServiceI {
 
     @ApiOperation(value = "通过条件查询规格组信息")
     @GetMapping(value = "specGroup/list")
-    Result<List<SpecGroupEntity>> getSpecGroupInfo(SpecGroupDTO specGroupDTO);
+    Result<List<SpecGroupEntity>> getSpecGroupInfo(@SpringQueryMap SpecGroupDTO specGroupDTO);
 
     @ApiOperation(value = "新增规格组")
     @PostMapping(value = "specGroup/save")
@@ -36,7 +37,7 @@ public interface SpecificationServiceI {
 
     @ApiOperation(value = "通过组id查询规格参数")
     @GetMapping(value = "specParam/list")
-    Result<List<SpecParamEntity>> getSpecParamByGroupId(SpecParamDTO specParamDTO);
+    Result<List<SpecParamEntity>> getSpecParamByGroupId(@SpringQueryMap SpecParamDTO specParamDTO);
 
     @ApiOperation(value = "新增规格参数")
     @PostMapping(value = "specParam/save")

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>each</title>
+</head>
+<body>
+<ul>
+    <li>编码--密码--年龄</li>
+    <li th:each="stu : ${students}">
+        <span th:text="${stu.code}"></span>----
+        <span th:text="${stu.pass}"></span>----
+        <span th:text="${stu.age}"></span>
+    </li>
+</ul>
+</body>
+</html>
