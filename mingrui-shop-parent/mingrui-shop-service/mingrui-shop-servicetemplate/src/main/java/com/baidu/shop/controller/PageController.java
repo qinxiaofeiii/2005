@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Map;
 
-@Controller
-@RequestMapping(value = "item")
+//@Controller
+//@RequestMapping(value = "item")
 public class PageController {
 
     @Autowired
