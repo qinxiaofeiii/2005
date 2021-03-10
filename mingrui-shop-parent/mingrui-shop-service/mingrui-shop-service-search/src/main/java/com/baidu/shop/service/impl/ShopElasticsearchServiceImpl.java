@@ -22,7 +22,6 @@ import com.baidu.shop.utils.JSONUtil;
 import org.apache.commons.lang.math.NumberUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
@@ -57,6 +56,29 @@ public class ShopElasticsearchServiceImpl extends BaseApiService implements Shop
 
     @Autowired
     private CategoryFeign categoryFeign;
+
+    @Override
+    public Result<JSONObject> saveData(Integer spuId) {
+
+        SpuDTO spuDTO = new SpuDTO();
+        spuDTO.setId(spuId);
+
+        List<GoodsDoc> goodsDocs = this.esGoodsInfo(spuDTO);
+        elasticsearchRestTemplate.save(goodsDocs.get(0));
+
+        return this.setResultSuccess();
+    }
+
+    @Override
+    public Result<JSONObject> delData(Integer spuId) {
+
+        GoodsDoc goodsDoc = new GoodsDoc();
+        goodsDoc.setId(spuId.longValue());
+
+        elasticsearchRestTemplate.delete(goodsDoc);
+
+        return this.setResultSuccess();
+    }
 
     @Override
     public Result<List<GoodsDoc>> search(String search,Integer page,String filter) {
@@ -217,7 +239,7 @@ public class ShopElasticsearchServiceImpl extends BaseApiService implements Shop
             indexOperations.createMapping();
         }
         //查询数据批量新增
-        List<GoodsDoc> goodsDocs = this.esGoodsInfo();
+        List<GoodsDoc> goodsDocs = this.esGoodsInfo(new SpuDTO());
         elasticsearchRestTemplate.save(goodsDocs);
 
         return this.setResultSuccess();
@@ -234,9 +256,9 @@ public class ShopElasticsearchServiceImpl extends BaseApiService implements Shop
 
     //es入库数据准备
     // @Override
-    public List<GoodsDoc> esGoodsInfo() {
+    public List<GoodsDoc> esGoodsInfo(SpuDTO spuDTO) {
 
-        SpuDTO spuDTO = new SpuDTO();
+//        SpuDTO spuDTO = new SpuDTO();
         Result<List<SpuDTO>> spuInfo = goodsFeign.getSpuInfo(spuDTO);
 
         if(spuInfo.isSuccess()){
