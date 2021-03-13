@@ -4,10 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.baidu.shop.base.Result;
 import com.baidu.shop.dto.SkuDTO;
 import com.baidu.shop.dto.SpuDTO;
+import com.baidu.shop.entity.SkuEntity;
 import com.baidu.shop.entity.SpuDetailEntity;
 import com.baidu.shop.entity.SpuEntity;
 import com.baidu.shop.validate.group.MingruiOperation;
-import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.SpringQueryMap;
@@ -46,4 +46,8 @@ public interface GoodsServiceI {
     @ApiOperation(value = "商品上架和下架")
     @PutMapping(value = "/goods/editSaleable")
     Result<JSONObject>editSaleable(@RequestBody SpuEntity spuEntity);
+
+    @ApiOperation(value = "通过skuId查询sku信息")
+    @GetMapping(value = "/goods/getSkuById")
+    Result<SkuEntity> getSKuById(@RequestParam Long skuId);
 }

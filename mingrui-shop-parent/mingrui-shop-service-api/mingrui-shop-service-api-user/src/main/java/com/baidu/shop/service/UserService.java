@@ -22,9 +22,8 @@ public interface UserService {
     Result<JSONObject> register(@RequestBody UserDTO userDTO);
 
     @ApiOperation(value = "校验用户名或手机号唯一")
-    @GetMapping(value = "user/check/{value}/{type}")
-    Result<List<UserEntity>> checkUserNameOrPhone(@PathVariable(value = "value")
-                           String value, @PathVariable(value = "type") Integer type);
+    @GetMapping(value = "user/check")
+    Result<List<UserEntity>> checkUserNameOrPhone(@RequestParam String value,@RequestParam Integer type);
 
     @ApiOperation(value = "给手机发送验证码")
     @PostMapping(value = "user/send")
