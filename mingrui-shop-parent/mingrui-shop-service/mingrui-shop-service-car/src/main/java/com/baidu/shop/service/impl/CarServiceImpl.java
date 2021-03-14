@@ -39,6 +39,26 @@ public class CarServiceImpl extends BaseApiService implements CarService {
 
     private final String GOODS_CAR_PRE = "goods-car-";
 
+    private final Integer Good_CAR_ADD = 1;
+
+    @Override
+    public Result<JSONObject> operationGoods(String token, Long skuId, Integer type) {
+
+        try {
+            UserInfo userInfo = JwtUtils.getInfoFromToken(token, jwtConfig.getPublicKey());
+            Car carRedis = redisRepository.getHash(GOODS_CAR_PRE + userInfo.getId(), skuId + "", Car.class);
+
+            if(ObjectUtil.isNull(carRedis)) return this.setResultError("没有选择商品");
+            carRedis.setNum( type == Good_CAR_ADD ? carRedis.getNum() + 1 : carRedis.getNum() -1 );
+
+            redisRepository.setHash(GOODS_CAR_PRE + userInfo.getId(),skuId + "",JSONUtil.toJsonString(carRedis));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return this.setResultSuccess();
+    }
+
     @Override
     public Result<List<Car>> getUserCar(String token) {
 

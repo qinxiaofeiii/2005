@@ -24,4 +24,8 @@ public interface CarService {
     @GetMapping(value = "car/getUserCar")
     Result<List<Car>> getUserCar(@CookieValue(value = "MRSHOP_TOKEN") String token);
 
+    @ApiOperation(value = "修改购物车商品的数量")
+    @GetMapping(value = "car/operationGoods")
+    Result<JSONObject> operationGoods(@CookieValue(value = "MRSHOP_TOKEN") String token,Long skuId,Integer type);
+
 }
