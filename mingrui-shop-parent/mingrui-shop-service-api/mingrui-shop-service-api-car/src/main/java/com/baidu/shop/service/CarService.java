@@ -14,7 +14,7 @@ public interface CarService {
 
     @ApiOperation(value = "添加商品到购物车")
     @PostMapping(value = "car/addCar")
-    Result<JSONObject> addCar(@RequestBody Car car, @CookieValue(value = "MRSHOP_TOKEN") String token);
+    Result<Car> addCar(@RequestBody Car car, @CookieValue(value = "MRSHOP_TOKEN") String token);
 
     @ApiOperation(value = "合并购物车")
     @PostMapping(value = "car/mergeCar")

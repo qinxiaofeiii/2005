@@ -1,5 +1,6 @@
 package com.baidu.shop.dto;
 
+import com.baidu.shop.base.BaseDTO;
 import com.baidu.shop.validate.group.MingruiOperation;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @ApiModel(value = "订单数据传输")
-public class OrderDTO {
+public class OrderDTO extends BaseDTO {
 
     @ApiModelProperty(value = "收货地址id" ,example = "1")
     @NotNull(message = "收货地址不能为空", groups ={MingruiOperation.Update.class})

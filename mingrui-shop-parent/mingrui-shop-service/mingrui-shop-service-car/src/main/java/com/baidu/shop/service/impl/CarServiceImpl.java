@@ -92,7 +92,7 @@ public class CarServiceImpl extends BaseApiService implements CarService {
     }
 
     @Override
-    public Result<JSONObject> addCar(Car car, String token) {
+    public Result<Car> addCar(Car car, String token) {
 
         //redis Hash Map<userId, Map<skuId, goods>> map = new HashMap<>();
         try {
@@ -129,6 +129,6 @@ public class CarServiceImpl extends BaseApiService implements CarService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return this.setResultSuccess();
+        return this.setResultSuccess(car);
     }
 }

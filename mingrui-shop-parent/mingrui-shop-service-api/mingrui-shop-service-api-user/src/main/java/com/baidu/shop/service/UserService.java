@@ -29,4 +29,5 @@ public interface UserService {
     @PostMapping(value = "user/send")
     Result<JSONObject> send(@RequestBody UserDTO userDTO);
 
+
 }

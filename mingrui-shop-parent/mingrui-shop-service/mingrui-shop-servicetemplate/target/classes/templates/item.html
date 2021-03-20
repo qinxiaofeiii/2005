@@ -634,20 +634,25 @@
             spuDetail,
             specGroupAndParam,
             genericSpec,
-            num:1
+            num:1,
+            spuId:0
         },
         methods : {
 
             addCar () {
-                console.log(this.sku)
                 mrshop.checkUserLogin().then(resp => {//用户已经登录
-
                     mrshop.http.post('/car/car/addCar',{
                         skuId:this.sku.id,
                         num:this.num,
                         sku:this.sku
-                    }).then(() => window.location.href = '../success-cart.html'
-                    ).catch(error => console.log(error));
+                    }).then((resp) => {
+                        this.sku.rows = this.num
+                        this.sku.ownSpec = this.ownSpec
+                        this.spuId = this.spuDetail.spuId
+                        mrshop.store.set("spuId",this.spuId)
+                        mrshop.store.set("goodsList",this.sku)
+                        window.location.href = '../success-cart.html'
+                    }).catch(error => console.log(error));
                 }).catch(error => {
                     //从localstorage中获取购物车数据 || 如果没有获取到数据,直接返回空的数组
                         const carList = mrshop.store.get("carList") || [];
