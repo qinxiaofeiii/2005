@@ -86,12 +86,6 @@ public class GoodsServiceImpl extends BaseApiService implements GoodsServiceI {
         return this.setResultSuccess();
     }
 
-    public Integer getdeleteGoods(){
-
-
-
-        return  null;
-    }
 
     @Override
     @Transactional

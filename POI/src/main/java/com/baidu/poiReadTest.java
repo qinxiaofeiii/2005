@@ -59,11 +59,7 @@ public class poiReadTest {
         System.err.println(cell.getNumericCellValue());
         inputStream.close();
     }
-
-    @Test
-    public void testCellType(){
-
-    }
+    
 }
 
 
